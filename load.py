@@ -47,21 +47,22 @@ async def main(workers):
         print(item.result())
 
 
-url_ip = 'http://httpbin.org/ip'
-url_uuid = 'http://httpbin.org/uuid'
-url_user_agent = 'http://httpbin.org/user-agent'
-url_headers = 'http://httpbin.org/headers'
+if __name__ == '__main__':
+    url_ip = 'http://httpbin.org/ip'
+    url_uuid = 'http://httpbin.org/uuid'
+    url_user_agent = 'http://httpbin.org/user-agent'
+    url_headers = 'http://httpbin.org/headers'
 
-workers = [
-    worker(url_ip, parse_ip),
-    worker(url_uuid, parse_uuid),
-    worker(url_user_agent, parse_user_agent),
-    worker(url_headers, parse_headers)
-]
+    workers = [
+        worker(url_ip, parse_ip),
+        worker(url_uuid, parse_uuid),
+        worker(url_user_agent, parse_user_agent),
+        worker(url_headers, parse_headers)
+    ]
 
-try:
-    loop.run_until_complete(main(workers))
-finally:
-    loop.stop()
-    client.close()
-    print('exit')
+    try:
+        loop.run_until_complete(main(workers))
+    finally:
+        loop.stop()
+        client.close()
+        print('exit')
