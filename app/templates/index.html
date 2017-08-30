@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table>
+    <thead style="background: #9c0">
+        <tr>
+            <td>Название</td>
+            <td>Нация</td>
+            <td>Тип</td>
+            <td>Уровень</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tank in tanks %}
+        <tr>
+            <td><b><a href="details/{{ tank['tank_id'] }}">{{ tank['name_i18n'] }}</a></b></td>
+            <td>{{ tank['nation_i18n'] }}</td>
+            <td>{{ tank['type_i18n'] }}</td>
+            <td>{{ tank['level'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

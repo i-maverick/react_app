@@ -1,0 +1,8 @@
+wot:
+  application_id: 5346c4faffa45dfe1164fa47c46b92bb
+  account_id: 47058199
+  main_url: https://api.worldoftanks.ru/wot
+
+redis:
+  host: 192.168.99.100
+  port: 32783
