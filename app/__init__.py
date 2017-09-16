@@ -1,6 +1,7 @@
-from tasks import load_config
+from config import load_config
 from flask import Flask
 import redis
+
 
 app = Flask(__name__)
 app.cfg = load_config()
