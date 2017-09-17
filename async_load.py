@@ -1,7 +1,6 @@
 from config import load_config
 import aiohttp
 import asyncio
-import logging
 import redis
 
 
