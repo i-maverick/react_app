@@ -13,18 +13,18 @@ async def fetch(url, params):
     return None
 
 
-async def parse_data(json, type):
+async def parse_data(json, obj):
     for id in json['data']:
         for key in json['data'][id]:
-            await red.hset('{}:{}'.format(type, id), key, json['data'][id][key])
+            red.hset('{}:{}'.format(obj, id), key, json['data'][id][key])
 
 
-async def parse_info(json, type, account_id):
-    account_data = json[str(account_id)]
+async def parse_info(json, obj, account_id):
+    account_data = json['data'][str(account_id)]
     for record in account_data:
         id = record['tank_id']
         for key in record:
-            await red.hset('{}:{}'.format(type, id), key, record[key])
+            red.hset('{}:{}'.format(obj, id), key, record[key])
 
 
 async def task(type, obj, account_id = None):
@@ -32,7 +32,7 @@ async def task(type, obj, account_id = None):
     url = '{}/{}/{}/'.format(main_url, type, obj)
     params = {'application_id': cfg['wot']['application_id']}
     if account_id:
-        params['account_id'] = cfg['wot']['account_id']
+        params['account_id'] = account_id
 
     print('loading:', url)
 
@@ -40,17 +40,18 @@ async def task(type, obj, account_id = None):
 
     if json:
         if type == 'encyclopedia':
-            await parse_data(json, type)
+            await parse_data(json, obj)
         elif type == 'tanks':
-            await parse_info(json, type, account_id)
+            await parse_info(json, obj, account_id)
         elif type == 'ratings':
-            await parse_info(json, type, account_id)
+            await parse_info(json, obj, account_id)
         return 'success:', url
 
     return 'error:', url
 
 
 async def main():
+    account_id = cfg['wot']['account_id']
     tasks = [
         task('encyclopedia', 'tanks'),
         task('encyclopedia', 'vehicles'),
@@ -60,9 +61,9 @@ async def main():
         task('encyclopedia', 'tankradios'),
         task('encyclopedia', 'tankchassis'),
         task('encyclopedia', 'tankguns'),
-        task('tanks', 'stats'),
-        task('tanks', 'achievements'),
-        task('ratings', 'accounts')
+        task('tanks', 'stats', account_id),
+        task('tanks', 'achievements', account_id),
+#        task('ratings', 'accounts', account_id)
     ]
 
     completed, pending = await asyncio.wait(tasks)
