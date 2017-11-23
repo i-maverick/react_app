@@ -1,14 +1,20 @@
-class SearchBar extends React.Component {
-	constructor(props) {
-  	super(props)
-    this.handleChange = this.handleChange.bind(this)
+import React, {Component} from "react";
+import "./App.css";
+
+
+class SearchBar extends Component {
+  constructor(props) {
+    super(props);
+    this.handleFilterTextChange  = this.handleFilterTextChange.bind(this);
+    this.handleInStockChange = this.handleInStockChange.bind(this);
   }
 
-	handleChange() {
-  	this.props.onUserInput(
-    	this.filterTextInput.value,
-      this.stockOnlyInput.checked
-    )
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value)
+  }
+
+  handleInStockChange(e) {
+    this.props.onInStockChange(e.target.checked)
   }
 
   render() {
@@ -16,13 +22,11 @@ class SearchBar extends React.Component {
       <form>
         <input type="text" placeholder="Search..."
           value={this.props.filterText}
-          ref={(input) => this.fieldTextInput = input}
-          onChange={this.handleChange} />
+          onChange={this.handleFilterTextChange} />
         <p>
           <input type="checkbox"
-            checked={this.props.stockOnly}
-            ref={(input) => this.stockOnlyInput = input}
-            onChange={this.handleChange} />
+            checked={this.props.inStockOnly}
+            onChange={this.handleInStockChange} />
               &nbsp;Show only stocked products
         </p>
       </form>
@@ -30,10 +34,10 @@ class SearchBar extends React.Component {
   }
 }
 
-class ProductRow extends React.Component {
-	render() {
-  	return (
-    	<tr>
+class ProductRow extends Component {
+  render() {
+    return (
+      <tr>
         <td>{this.props.product.name}</td>
         <td>{this.props.product.price}</td>
         <td>{this.props.product.stocked ? 'yes' : 'no'}</td>
@@ -42,18 +46,18 @@ class ProductRow extends React.Component {
   }
 }
 
-class ProductTable extends React.Component {
-	render() {
-  	var rows = []
+class ProductTable extends Component {
+  render() {
+    let rows = [];
     this.props.products.forEach((product) => {
-    	if (product.name.indexOf(this.props.filterText) === -1 ||
-      	!product.stocked && this.props.stockOnly) {
-      	return
+      if (product.name.indexOf(this.props.filterText) === -1 ||
+        !product.stocked && this.props.inStockOnly) {
+        return
       }
-			rows.push(<ProductRow product={product} key={product.name} />)
-    })
-  	return (
-      <table>
+      rows.push(<ProductRow product={product} key={product.name} />)
+    });
+    return (
+      <table width="500">
         <thead>
           <tr>
             <th>Name</th>
@@ -67,13 +71,28 @@ class ProductTable extends React.Component {
   }
 }
 
-class FilterableProductTable extends React.Component {
-	constructor(props) {
-  	super(props)
+class FilterableProductTable extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-    	filterText: '',
-      stockOnly: false,
-    }
+      filterText: '',
+      inStockOnly: false,
+    };
+
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this)
+    this.handleInStockChange = this.handleInStockChange.bind(this)
+  }
+
+  handleFilterTextChange(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
+
+  handleInStockChange(inStockOnly) {
+    this.setState({
+      inStockOnly: inStockOnly
+    })
   }
 
   render() {
@@ -81,12 +100,14 @@ class FilterableProductTable extends React.Component {
       <div>
         <SearchBar
           filterText={this.state.filterText}
-          stockOnly={this.state.stockOnly}
+          inStockOnly={this.state.inStockOnly}
+          onFilterTextChange={this.handleFilterTextChange}
+          onInStockChange={this.handleInStockChange}
         />
         <ProductTable
           products={this.props.products}
           filterText={this.state.filterText}
-          stockOnly={this.state.stockOnly}
+          inStockOnly={this.state.inStockOnly}
         />
       </div>
     );
@@ -102,7 +123,10 @@ const products = [
   {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
 ];
 
-ReactDOM.render(
-  <FilterableProductTable products={products} />,
-  document.getElementById('app')
-);
+class App extends Component {
+    render() {
+      return <FilterableProductTable products={products} />
+    }
+}
+
+export default App;
