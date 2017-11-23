@@ -6,8 +6,8 @@ class SearchBar extends Component {
     constructor(props) {
         super(props);
 
-        this.handleFilterTextChange  = this.handleFilterTextChange.bind(this);
-        this.handleInStockChange = this.handleInStockChange.bind(this);
+        // this.handleFilterTextChange  = this.handleFilterTextChange.bind(this);
+        // this.handleInStockChange = this.handleInStockChange.bind(this);
     }
 
     handleFilterTextChange(e) {
@@ -23,11 +23,11 @@ class SearchBar extends Component {
             <form>
                 <input type="text" placeholder="Search..."
                     value={this.filterText}
-                    onChange={this.handleFilterTextChange} />
+                    onChange={this.handleFilterTextChange.bind(this)} />
                 <p>
                     <input type="checkbox"
                         checked={this.inStockOnly}
-                        onChange={this.handleInStockChange} />
+                        onChange={this.handleInStockChange.bind(this)} />
                         &nbsp;Show only stocked products
                 </p>
             </form>
@@ -96,8 +96,8 @@ class FilterableProductTable extends Component {
             inStockOnly: false,
         };
 
-        this.handleFilterTextChange = this.handleFilterTextChange.bind(this)
-        this.handleInStockChange = this.handleInStockChange.bind(this)
+        // this.handleFilterTextChange = this.handleFilterTextChange.bind(this)
+        // this.handleInStockChange = this.handleInStockChange.bind(this)
     }
 
     handleFilterTextChange(filterText) {
@@ -114,8 +114,8 @@ class FilterableProductTable extends Component {
             <SearchBar
                 filterText={this.state.filterText}
                 inStockOnly={this.state.inStockOnly}
-                onFilterTextChange={this.handleFilterTextChange}
-                onInStockChange={this.handleInStockChange}
+                onFilterTextChange={this.handleFilterTextChange.bind(this)}
+                onInStockChange={this.handleInStockChange.bind(this)}
                 />
             <ProductTable
                 products={this.products}
